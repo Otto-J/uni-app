@@ -11,6 +11,7 @@
     "bin",
     "dist"
   ],
+  "homepage": "https://github.com/dcloudio/uni-app/tree/next/packages/vite-plugin-uni",
   "engines": {
     "node": "^14.18.0 || >=16.0.0"
   },
