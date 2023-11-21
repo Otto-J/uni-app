@@ -1,6 +1,10 @@
-# packages/uni-app
+# @dcloudio/uni-app
 
 框架架构、生命周期等。
+
+## build
+
+rollup 使用 build.json
 
 ## src
 

@@ -20,11 +20,17 @@ const transpileOnly = args.transpileOnly
 
 run()
 
+// console.log(
+//   allTargets,
+// )
+
 async function run() {
   if (!targets.length) {
     await buildAll(allTargets)
   } else {
-    await buildAll(fuzzyMatchTarget(targets, buildAllMatching))
+    const buildTargets = fuzzyMatchTarget(targets, buildAllMatching)
+    console.log(buildTargets)
+    await buildAll(buildTargets)
   }
 }
 
@@ -155,7 +161,11 @@ async function build(target) {
         ['build', '--config', path.resolve(pkgDir, 'vite.config.ts')],
         {
           stdio: 'inherit',
-          env: Object.assign({ FORMAT: 'es', UNI_APP_X: 'true' }, process.env, env),
+          env: Object.assign(
+            { FORMAT: 'es', UNI_APP_X: 'true' },
+            process.env,
+            env
+          ),
           cwd: pkgDir,
         }
       )
@@ -164,7 +174,11 @@ async function build(target) {
         ['build', '--config', path.resolve(pkgDir, 'vite.config.ts')],
         {
           stdio: 'inherit',
-          env: Object.assign({ FORMAT: 'cjs', UNI_APP_X: 'true' }, process.env, env),
+          env: Object.assign(
+            { FORMAT: 'cjs', UNI_APP_X: 'true' },
+            process.env,
+            env
+          ),
           cwd: pkgDir,
         }
       )
@@ -189,7 +203,12 @@ async function build(target) {
       [
         '-c',
         '--environment',
-        [`NODE_ENV:${env}`, types ? `TYPES:true` : ``, `TARGET:${target}`, transpileOnly ? `TRANSPILE_ONLY:true` : ``]
+        [
+          `NODE_ENV:${env}`,
+          types ? `TYPES:true` : ``,
+          `TARGET:${target}`,
+          transpileOnly ? `TRANSPILE_ONLY:true` : ``,
+        ]
           .filter(Boolean)
           .join(','),
       ],
