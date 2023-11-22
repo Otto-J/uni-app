@@ -194,5 +194,5 @@ export function uniMiniProgramPlugin(
         }
       }
     },
-  }
+  } as UniVitePlugin
 }

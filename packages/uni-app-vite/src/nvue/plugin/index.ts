@@ -154,7 +154,7 @@ export function uniAppNVuePlugin({
         }
       },
     }),
-  }
+  } as Plugin
 }
 
 function createChunkFileNames(

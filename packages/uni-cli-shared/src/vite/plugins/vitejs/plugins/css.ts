@@ -782,23 +782,30 @@ interface PostCSSConfigResult {
   plugins: Postcss.AcceptedPlugin[]
 }
 
+/** resolve Postcss Config
+ * @returns
+ */
 async function resolvePostcssConfig(
   config: ResolvedConfig
 ): Promise<PostCSSConfigResult | null> {
+  // 查询
   let result = postcssConfigCache.get(config)
   if (result !== undefined) {
+    // 返回查询结果
     return result
   }
+  // return null
 
   // inline postcss config via vite config
   const inlineOptions = config.css?.postcss
+  // 判断是否为 obj 读取 postcss 值
   if (isObject(inlineOptions)) {
     const options = { ...inlineOptions }
 
     delete options.plugins
     result = {
-      options,
-      plugins: inlineOptions.plugins || [],
+      options: options as PostCSSConfigResult['options'],
+      plugins: (inlineOptions.plugins || []) as PostCSSConfigResult['plugins'],
     }
   } else {
     const searchPath = isString(inlineOptions) ? inlineOptions : config.root

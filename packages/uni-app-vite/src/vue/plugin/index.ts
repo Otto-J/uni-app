@@ -94,7 +94,7 @@ export function uniAppVuePlugin(): UniVitePlugin {
         type: 'asset',
       })
     },
-  }
+  } as UniVitePlugin
 }
 
 function genViewHtml(bundle: OutputBundle) {

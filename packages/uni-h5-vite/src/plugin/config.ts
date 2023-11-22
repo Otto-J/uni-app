@@ -114,5 +114,5 @@ export function createConfig(options: {
         },
       },
     }
-  }
+  } as Plugin['config']
 }
