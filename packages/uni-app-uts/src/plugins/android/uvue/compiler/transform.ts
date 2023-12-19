@@ -19,7 +19,7 @@ import {
   helperNameMap,
   isSlotOutlet,
   isVSlot,
-  makeBlock,
+  convertToBlock,
   createVNodeCall,
 } from '@vue/compiler-core'
 import {
@@ -30,6 +30,7 @@ import {
   isString,
   PatchFlags,
   PatchFlagNames,
+  EMPTY_OBJ,
 } from '@vue/shared'
 import { defaultOnError, defaultOnWarn } from './errors'
 import { TransformOptions } from './options'
@@ -115,14 +116,16 @@ export interface TransformContext
 export function createTransformContext(
   root: RootNode,
   {
-    rootDir,
-    targetLanguage,
+    rootDir = '',
+    targetLanguage = 'kotlin',
     filename = '',
     prefixIdentifiers = false,
     nodeTransforms = [],
     directiveTransforms = {},
     scopeId = null,
     slotted = true,
+    bindingMetadata = EMPTY_OBJ,
+    inline = false,
     isBuiltInComponent = NOOP,
     isCustomElement = NOOP,
     onError = defaultOnError,
@@ -136,7 +139,8 @@ export function createTransformContext(
     targetLanguage,
     selfName: nameMatch && capitalize(camelize(nameMatch[1])),
     prefixIdentifiers,
-    bindingMetadata: {},
+    bindingMetadata,
+    inline,
     nodeTransforms,
     directiveTransforms,
     elements: new Set(),
@@ -270,10 +274,18 @@ export function transform(root: RootNode, options: TransformOptions) {
   const context = createTransformContext(root, options)
   traverseNode(root, context)
   createRootCodegen(root, context)
+
+  // finalize meta information
+  root.helpers = new Set([...context.helpers.keys()])
   root.components = [...context.components]
-  // @ts-ignore
-  root.elements = Array.from(context.elements)
+  root.directives = [...context.directives]
   root.imports = context.imports
+  // root.hoists = context.hoists
+  root.temps = context.temps
+  root.cached = context.cached
+
+  // @ts-expect-error
+  root.elements = Array.from(context.elements)
 }
 
 export function isSingleElementRoot(
@@ -299,7 +311,7 @@ function createRootCodegen(root: RootNode, context: TransformContext) {
       // SimpleExpressionNode
       const codegenNode = child.codegenNode
       if (codegenNode.type === NodeTypes.VNODE_CALL) {
-        makeBlock(codegenNode, context as any)
+        convertToBlock(codegenNode, context as any)
       }
       root.codegenNode = codegenNode
     } else {

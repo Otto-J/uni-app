@@ -3,8 +3,8 @@ import type { RawSourceMap } from 'source-map-js'
 import { DirectiveTransform, NodeTransform } from './transform'
 
 interface SharedTransformCodegenOptions {
-  rootDir: string
-  targetLanguage: 'kotlin' | 'swift'
+  rootDir?: string
+  targetLanguage?: 'kotlin' | 'swift'
   /**
    * Transform expressions like {{ foo }} to `_ctx.foo`.
    * @default false
@@ -15,6 +15,11 @@ interface SharedTransformCodegenOptions {
    * binding access when `prefixIdentifiers` is enabled.
    */
   bindingMetadata?: BindingMetadata
+  /**
+   * Compile the function for inlining inside setup().
+   * This allows the function to directly access setup() local bindings.
+   */
+  inline?: boolean
   /**
    * Filename for source map generation.
    * Also used for self-recursive reference in templates
@@ -28,10 +33,11 @@ interface SharedTransformCodegenOptions {
 }
 export interface CodegenOptions extends SharedTransformCodegenOptions {
   /**
-   * function
    * @default 'default'
    */
-  mode?: 'default' | 'function'
+  mode?: 'default' | 'module'
+
+  inMap?: RawSourceMap
   /**
    * Generate source map?
    * @default false
@@ -79,7 +85,7 @@ export interface ErrorHandlingOptions {
 export interface TransformOptions
   extends SharedTransformCodegenOptions,
     ErrorHandlingOptions {
-  rootDir: string
+  rootDir?: string
   /**
    * An array of node transforms to be applied to every AST node.
    */
@@ -111,11 +117,18 @@ export interface TransformOptions
   slotted?: boolean
 }
 
-export type CompilerOptions = TransformOptions & CodegenOptions
+export type TemplateCompilerOptions = {
+  /**
+   * e.g. platform native elements, e.g. `<div>` for browsers
+   */
+  isNativeTag?: (tag: string) => boolean
+} & TransformOptions &
+  CodegenOptions
 
 export interface CodegenResult {
   ast?: RootNode
   code: string
+  preamble?: string
   easyComponentAutoImports: Record<string, [string, string]>
   importEasyComponents: string[]
   importUTSComponents: string[]

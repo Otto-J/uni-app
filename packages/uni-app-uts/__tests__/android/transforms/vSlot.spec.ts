@@ -95,13 +95,13 @@ describe('compiler: slot', () => {
       `
 function PagesIndexIndexRender(): VNode | null {
 const _ctx = this
+const _cache = this.$.renderCache
   return createElementVNode("view", null, [
     renderSlot(_ctx.$slots, "default", utsMapOf({ data: "data" }))
   ])
 }`,
       {
-        targetLanguage: 'kotlin',
-        mode: 'function',
+        mode: 'module',
       }
     )
   })
@@ -112,6 +112,7 @@ const _ctx = this
       `
 function PagesIndexIndexRender(): VNode | null {
 const _ctx = this
+const _cache = this.$.renderCache
 const _component_Foo = resolveComponent("Foo")
 
   return createElementVNode("view", null, [
@@ -122,8 +123,7 @@ const _component_Foo = resolveComponent("Foo")
   ])
 }`,
       {
-        targetLanguage: 'kotlin',
-        mode: 'function',
+        mode: 'module',
       }
     )
   })
@@ -136,9 +136,7 @@ const _component_Foo = resolveComponent("Foo")
     createElementVNode("view")
   ])
 ])`,
-      {
-        targetLanguage: 'kotlin',
-      }
+      {}
     )
   })
 
@@ -148,6 +146,7 @@ const _component_Foo = resolveComponent("Foo")
       `
 function PagesIndexIndexRender(): VNode | null {
 const _ctx = this
+const _cache = this.$.renderCache
 const _component_Foo = resolveComponent("Foo")
 
   return createElementVNode("view", null, [
@@ -160,8 +159,7 @@ const _component_Foo = resolveComponent("Foo")
   ])
 }`,
       {
-        targetLanguage: 'kotlin',
-        mode: 'function',
+        mode: 'module',
       }
     )
   })
@@ -172,6 +170,7 @@ const _component_Foo = resolveComponent("Foo")
       `
 function PagesIndexIndexRender(): VNode | null {
 const _ctx = this
+const _cache = this.$.renderCache
 const _component_Foo = resolveComponent("Foo")
 
   return createElementVNode("view", null, [
@@ -184,8 +183,7 @@ const _component_Foo = resolveComponent("Foo")
   ])
 }`,
       {
-        targetLanguage: 'kotlin',
-        mode: 'function',
+        mode: 'module',
       }
     )
   })
